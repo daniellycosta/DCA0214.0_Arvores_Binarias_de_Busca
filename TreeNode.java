@@ -38,6 +38,7 @@ public class TreeNode<E extends Comparable<E>> {
                  return false;   
               }
             }
+              return false;
           }
 
 	  public TreeNode<E> add(E x) {
@@ -57,11 +58,20 @@ public class TreeNode<E extends Comparable<E>> {
             }else if(x.compareTo(this.value)== 0){
                 return null;
             }
+            return null;
 	  }
 
 	  public E getMin() {
-		throw new Error("A completer: exo 1"); //descer sempre pela esquerda
+            TreeNode minAtual = this;
+            if(this == null){
+                return null;
+            } else{
+                while(minAtual.left !=null){
+                minAtual = this.left;
+            }
+            return (E) minAtual.value;
 	  }
+        }
 
 	  static<E extends Comparable<E>> TreeNode<E> ofList(Queue<E> l, int n, int k) {
 		throw new Error("A completer: exo 1");
