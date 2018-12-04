@@ -62,14 +62,14 @@ public class TreeNode<E extends Comparable<E>> {
 	  }
 
 	  public E getMin() {
-            TreeNode minAtual = this;
-            if(this == null){
+	
+            if(left == null){
                 return null;
             } else{
-                while(minAtual.left !=null){
-                minAtual = this.left;
+                if(left !=null){
+               return left.getMin();
             }
-            return (E) minAtual.value;
+            return value;
 	  }
         }
 
