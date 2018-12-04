@@ -65,16 +65,25 @@ public class TreeNode<E extends Comparable<E>> {
 	
             if(left == null){
                 return null;
-            } else{
-                if(left !=null){
+            } else if(left !=null){
                return left.getMin();
-            }
-            return value;
+            }else {
+            	return value;
+	    }
 	  }
         }
 
 	  static<E extends Comparable<E>> TreeNode<E> ofList(Queue<E> l, int n, int k) {
-		throw new Error("A completer: exo 1");
+ 		if (k == 0 && n>0) {
+		    
+			return new TreeNode(l.poll());
+		}else {
+			return null;
+		    }
+		} 
+		if(k>=0 && n>=0){
+		    return new TreeNode<>(ofList(l, (n - 1) / 2, k - 1), l.poll(), ofList(l, n - (n - 1) / 2 - 1, k - 1));
+		}	
 	  }
 	  
 	  static<E extends Comparable<E>> TreeNode<E> ofList(Queue<E> l) {
