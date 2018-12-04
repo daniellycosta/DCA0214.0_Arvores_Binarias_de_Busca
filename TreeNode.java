@@ -75,8 +75,8 @@ public class TreeNode<E extends Comparable<E>> {
 
 	  static<E extends Comparable<E>> TreeNode<E> ofList(Queue<E> l, int n, int k) {
  		if (k == 0 && n>0) {
-		    
 			return new TreeNode(l.poll());
+			//l.poll() pega a head 
 		}else {
 			return null;
 		    }
@@ -101,7 +101,38 @@ public class TreeNode<E extends Comparable<E>> {
 	   * from s smaller and greater than s
 	   */
 	  public Pair<TreeNode<E>> split(E x) {
-		throw new Error("A completer: exo 2");
+		
+		 TreeNode left = null;
+        	TreeNode right = null;
+		  Queue<TreeNode<E>> fila = new LinkedList<>();
+		  		  //passo um valor x de referencia (valor da raiz)
+        	fila.add(this);
+		   while (!fila.isEmpty()) {
+            TreeNode<E> noAtual = fila.element();
+            fila.poll();
+	if(x.compareTo(this.value)>0){ //x é maior (ir para a direita)
+                if(this.right == null){
+                    this.right = new TreeNode<>(noAtual.value);
+                }
+                else{
+                    this.right.add(noAtual.value);
+                }
+            }else if(x.compareTo(this.value)<0){//x é menor (ir pra esquerda)
+              if(this.left == null){
+                this.left = new TreeNode(noAtual.value);
+              }else{
+                  this.left.add(noAtual.value);
+              }     
+            }
+            return null; //nao sei como fazer o retorno
+	  }
+          
+
+        }
+
+		  
+		  
+		 
 	  }
 	  
 	  /* union */
