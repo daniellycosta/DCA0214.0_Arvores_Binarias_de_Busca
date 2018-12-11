@@ -94,7 +94,25 @@ public class TreeNode<E extends Comparable<E>> {
 
     /* subset */
     static <E extends Comparable<E>> boolean subset(TreeNode<E> s1, TreeNode<E> s2) {
-        throw new Error("A completer: exo 2");
+  
+	    if (s1 == null){
+		    return true;
+	    }else if (s2 == null){
+		    return false;    
+	    }else{
+		if(s1.value.compareTo(s2.value) == 0){
+			return subset(s1.left, s2.left) && subset(s1.right, s2.right);
+		}else if(s1.value.compareTo(s2.value)<0){	
+			return subset(aux.union(s1.left), s2.left);
+		}else if(s1.value.compareTo(s2.value)>0){
+			return subset(aux.union(s1.right), s2.right);
+		}
+	    
+	    
+	    } 
+	    
+	    return subser(s1.right,s2.right) && subset(s1.left,s2.left);
+	  
     }
 
     /* split(v,s) returns two trees, containing values
