@@ -75,10 +75,10 @@ public class TreeNode<E extends Comparable<E>> {
     }
 
     static <E extends Comparable<E>> TreeNode<E> ofList(Queue<E> l, int n, int k) {
-        if (k == 0 && n>0) {
+        if (k == 0 && n > 0) {
             return new TreeNode(l.poll());
             //l.poll() pega a head 
-        } else if(k==0 && n==0) {
+        } else if (k == 0 && n == 0) {
             return null;
         }
         if (k >= 0 && n >= 0) {
@@ -94,34 +94,39 @@ public class TreeNode<E extends Comparable<E>> {
 
     /* subset */
     static <E extends Comparable<E>> boolean subset(TreeNode<E> s1, TreeNode<E> s2) {
-  
-	    if (s1 == null){
-		    return true;
-	    }else if (s2 == null){
-		    return false;    
-	    }else{
-		if(s1.value.compareTo(s2.value) == 0){
-			return subset(s1.left, s2.left) && subset(s1.right, s2.right);
-		}else if(s1.value.compareTo(s2.value)<0){	
-			return subset(s2.union(s1.left), s2.left);
-		}else if(s1.value.compareTo(s2.value)>0){
-			return subset(s2.union(s1.right), s2.right);
-		}
-	    
-	    
-	    } 
-	    
-	    return subset(s1.right,s2.right) && subset(s1.left,s2.left);
-	  
+
+        if (s1 == null) {
+            return true;
+        } else if (s2 == null) {
+            return false;
+        } else {
+            if (s1.value.compareTo(s2.value) == 0) {
+                return subset(s1.left, s2.left) && subset(s1.right, s2.right);
+            } else if (s1.value.compareTo(s2.value) < 0) {
+                if(s1.left == null){
+                    return subset(s1.right, s2) && subset(new TreeNode<>(s1.value), s2.left);
+                }
+                return subset(s1.right, s2) && subset(s1.left.union(new TreeNode<>(s1.value)), s2.left);
+            } else if (s1.value.compareTo(s2.value) > 0) {
+                 if(s1.right == null){
+                    return subset(s1.left, s2) && subset(new TreeNode<>(s1.value), s2.right);
+                }
+                return subset(s1.left, s2) && subset(s1.right.union(new TreeNode<>(s1.value)), s2.right);
+            }
+
+        }
+
+        return subset(s1.right, s2.right) && subset(s1.left, s2.left);
+
     }
 
     /* split(v,s) returns two trees, containing values
-	   * from s smaller and greater than s
+     * from s smaller and greater than s
      */
     public Pair<TreeNode<E>> split(E x) {
 
-        TreeNode left = null;
-        TreeNode right = null;
+        TreeNode esq = null;
+        TreeNode dir = null;
         Queue<TreeNode<E>> fila = new LinkedList<>();
         //passo um valor x de referencia (valor da raiz)
         fila.add(this);
@@ -130,30 +135,63 @@ public class TreeNode<E extends Comparable<E>> {
             fila.poll();
 
             if (x.compareTo(noAtual.value) < 0) { //x é maior (ir para a direita)
-                if (this.right == null) {
-                    this.right = new TreeNode<>(noAtual.value);
+                if (dir == null) {
+                    dir = new TreeNode<>(noAtual.value);
                 } else {
-                    this.right.add(noAtual.value);
+                    dir.add(noAtual.value);
                 }
-            }else if(x.compareTo(noAtual.value)>0){//x é menor (ir pra esquerda)
-              if(this.left == null){
-                this.left = new TreeNode(noAtual.value);
-              }else{
-                  this.left.add(noAtual.value);
-              }    
+            } else if (x.compareTo(noAtual.value) > 0) {//x é menor (ir pra esquerda)
+                if (esq == null) {
+                    esq = new TreeNode(noAtual.value);
+                } else {
+                    esq.add(noAtual.value);
+                }
             }
 
-            
+            if (noAtual.left != null) {
+                fila.add(noAtual.left);
+            }
+            if (noAtual.right != null) {
+                fila.add(noAtual.right);
+            }
+
         }
-        
-        return new Pair<TreeNode<E>>(left, right);
+
+        return new Pair<TreeNode<E>>(esq, dir);
 
     }
 
     /* union */
     public TreeNode<E> union(TreeNode<E> s2) {
-        Pair<TreeNode<E>> divisao = s2.split(this.value);
-        return new TreeNode<>(this.left.union(divisao.a), this.value, this.left.union(divisao.b));
+        if (s2 != null) {
+            Pair<TreeNode<E>> divisao = s2.split(this.value);
+            
+            TreeNode<E> esq;
+            TreeNode<E> dir;
+            if (this.left == null) {
+                esq = divisao.a;
+            } else {
+                esq = this.left.union(divisao.a);
+            }
+            
+            if (this.right == null) {
+                dir = divisao.b;
+            } else {
+                dir = this.right.union(divisao.b);
+            }
+            
+            return new TreeNode<>(esq, this.value, dir);
+            
+            
+//            if (this.left == null) {
+//                return new TreeNode<>(divisao.a, this.value, this.right.union(divisao.b));
+//            } else if (this.right == null) {
+//                return new TreeNode<>(this.left.union(divisao.a), this.value, divisao.b);
+//            } else {
+//                return new TreeNode<>(this.left.union(divisao.a), this.value, this.right.union(divisao.b));
+//            }
+        }
+        return new TreeNode<>(this.left, this.value, this.right);
     }
 
     public String infixOrder() {
